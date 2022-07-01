@@ -8,6 +8,7 @@ import { CustomPagination } from "../pagination";
 import { Row } from "./row";
 import { Head } from "./head";
 import { EnhancedTableToolbar } from './enhancedTableToolbar'
+import { EnhancedRow } from "./enhancedRow";
 
 
 export default function TutorialTable(props) {
@@ -20,6 +21,7 @@ export default function TutorialTable(props) {
     pagination,
     collapsible,
     selecting,
+    actions
   } = props;
   const [page, setPage] = React.useState(0);
   const [selected, setSelected] = React.useState([]);
@@ -80,10 +82,11 @@ export default function TutorialTable(props) {
             headers={headers}
             collapsible={collapsible}
             selecting={selecting}
+            actions={actions}
           />
           <TableBody>
             {rowsData.map((item, idx) => (
-              <Row item={item} key={idx} collapsible={collapsible} selecting={selecting} isSelected={isSelected } handleClick={handleClick} />
+              <EnhancedRow item={item} key={idx} collapsible={collapsible} selecting={selecting} isSelected={isSelected } handleClick={handleClick} actions={actions} headers={headers} />
             ))}
           </TableBody>
         </Table>

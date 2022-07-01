@@ -2,7 +2,7 @@ import React from "react";
 import { Checkbox, TableCell, TableHead, TableRow } from "@mui/material";
 
 export function Head(props) {
-  const { headers, onSelectAllClick, numSelected, rowCount, collapsible, selecting } = props;
+  const { headers, onSelectAllClick, numSelected, rowCount, collapsible, selecting, actions } = props;
   return (
     <TableHead
       sx={{
@@ -30,6 +30,7 @@ export function Head(props) {
             {item.value}
           </TableCell>
         ))}
+        {actions && <TableCell />}
       </TableRow>
     </TableHead>
   );
