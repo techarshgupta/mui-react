@@ -11,13 +11,13 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { RowExpand } from "./rowExpand";
 
 export function EnhancedRow(props) {
-  const { item, collapsible, selecting, isSelected, handleClick, actions, headers } = props;
+  const { item, collapsible, selecting, isSelected, handleClick, actions, headers, index } = props;
   const [open, setOpen] = React.useState(false);
   const isItemSelected = isSelected(item.id);
   const labelId = `enhanced-table-checkbox-${item.id}`;
   return (
     <>
-      <TableRow>
+      <TableRow sx={(index+1)%2 === 0 ? { backgroundColor: "grey.200" } : {}}>
         {collapsible && <TableCell>
           <IconButton
             aria-label="expand row"

@@ -1,15 +1,10 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableContainer,
-} from "@mui/material";
+import { Table, TableBody, TableContainer } from "@mui/material";
 import { CustomPagination } from "../pagination";
 import { Row } from "./row";
 import { Head } from "./head";
-import { EnhancedTableToolbar } from './enhancedTableToolbar'
+import { EnhancedTableToolbar } from "./enhancedTableToolbar";
 import { EnhancedRow } from "./enhancedRow";
-
 
 export default function TutorialTable(props) {
   const {
@@ -21,12 +16,20 @@ export default function TutorialTable(props) {
     pagination,
     collapsible,
     selecting,
-    actions
+    actions,
+    sorting,
   } = props;
   const [page, setPage] = React.useState(0);
   const [selected, setSelected] = React.useState([]);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState(2);
   const handlePageClick = (page) => {
     setPage(page);
+  };
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
   };
   const paginationProps = {
     showFirstButton,
@@ -36,9 +39,47 @@ export default function TutorialTable(props) {
     handlePageClick,
     rowsPerPage,
     count: rows.length,
+    sorting,
   };
+  function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator(order, orderBy) {
+    return order === "desc"
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  // This method is created for cross-browser compatibility, if you don't
+  // need to support IE11, you can use Array.prototype.sort() directly
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) {
+        return order;
+      }
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  }
   let rowsData = rows;
-  if (paginationProps.pagination) {
+  if (sorting && pagination) {
+    rowsData = stableSort(rows, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage
+    );
+    rowsData = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  } else if (sorting && !pagination) {
+    rowsData = stableSort(rows, getComparator(order, orderBy));
+  } else if (pagination && !sorting) {
     rowsData = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }
   const handleClick = (event, name) => {
@@ -54,7 +95,7 @@ export default function TutorialTable(props) {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
 
@@ -83,10 +124,24 @@ export default function TutorialTable(props) {
             collapsible={collapsible}
             selecting={selecting}
             actions={actions}
+            sorting={sorting}
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
           />
           <TableBody>
             {rowsData.map((item, idx) => (
-              <EnhancedRow item={item} key={idx} collapsible={collapsible} selecting={selecting} isSelected={isSelected } handleClick={handleClick} actions={actions} headers={headers} />
+              <EnhancedRow
+                item={item}
+                key={idx}
+                collapsible={collapsible}
+                selecting={selecting}
+                isSelected={isSelected}
+                handleClick={handleClick}
+                actions={actions}
+                headers={headers}
+                index={idx}
+              />
             ))}
           </TableBody>
         </Table>

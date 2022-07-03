@@ -236,31 +236,37 @@ function App() {
   ];
   const newHeaders = [
     {
+      id: 1,
       sorting: 'false',
       value: 'Name',
       key: 'dataset'
     },
     {
+      id: 2,
       sorting: 'false',
       value: 'Type',
       key: 'type'
     },
     {
+      id: 3,
       sorting: 'false',
       value: 'Owner',
       key: 'owner'
     },
     {
+      id: 4,
       sorting: 'false',
       value: 'Access Level',
       key: 'access'
     },
     {
+      id: 5,
       sorting: 'false',
       value: 'Date',
       key: 'date'
     },
     {
+      id: 6,
       sorting: 'false',
       value: '',
       key: 'button'
@@ -720,6 +726,7 @@ function App() {
     collapsible: true,
     selecting: true,
     actions: true,
+    sorting: true,
   }
   return (
     <div className="App">
